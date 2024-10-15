@@ -55,7 +55,7 @@ export default class ApiTasks extends HttpClient {
   public async getTask(id: string): Promise<ScappingUrlInterface[]> {
     try {
       const response = await this.get(`tasks/collect-data/${encodeURIComponent(id)}`);
-      
+
       if (!Array.isArray(response.data)) {
         return [response.data];
       }

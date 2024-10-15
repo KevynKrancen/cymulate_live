@@ -47,10 +47,16 @@ export class TasksService {
   }
 
   async collectData(id: string): Promise<ScrappedData> {
-    const scrappedData = await this.scrappedDataModel.findById(id);
-    if (!scrappedData) {
-      throw new NotFoundException(`Scrapped data with ID "${id}" not found`);
+    const task = await this.taskModel.findById(id).exec();
+    if (!task) {
+      throw new NotFoundException(`Task with ID "${id}" not found`);
     }
+
+    const scrappedData = await this.scrappedDataModel.findOne({ token: task.token }).exec();
+    if (!scrappedData) {
+      throw new NotFoundException(`Scrapped data with token "${task.token}" not found`);
+    }
+    console.log(scrappedData)
     return scrappedData;
   }
 

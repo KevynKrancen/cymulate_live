@@ -14,7 +14,7 @@ import {
   Alert,
   Tooltip
 } from '@mui/material';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ProgressBar } from '../../components/global';
 import { AuthClient } from '../../services';
 import heroImage from '../../assets/images/landing-pages/image-cache.jpeg';
@@ -26,8 +26,9 @@ import ApiTasks from '../../services/api/ApiTasks/ApiTasks';
 function TaskDataPage() {  
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserInterface | null>(null);
-  const [tasks, setTasks] = useState<ScappingUrlInterface[]>([]); 
+  const [taskData, setTaskData] = useState<ScappingUrlInterface | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { taskId } = useParams<{ taskId?: string }>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,15 +39,18 @@ function TaskDataPage() {
         const userResponse: UserInterface = await AuthClient.getInstance().getUser();
         setUser(userResponse);
 
-        if (userResponse?.id) {
-          const tasksResponse: ScappingUrlInterface[] = await ApiTasks.getInstance().getTask(userResponse.id);
-
-          if (Array.isArray(tasksResponse)) {
-            setTasks(tasksResponse);
+        if (userResponse?.id && taskId) {
+          const taskResponse: ScappingUrlInterface[] = await ApiTasks.getInstance().getTask(taskId);
+          console.log('Task response:', taskResponse);
+          if (Array.isArray(taskResponse) && taskResponse.length > 0) {
+            setTaskData(taskResponse[0]);
           } else {
-            console.error('Tasks response is not an array:', tasksResponse);
-            setError('Failed to fetch tasks. Please try again later.');
+            console.error('Task response is not as expected:', taskResponse);
+            setError('Failed to fetch task data. Please try again later.');
           }
+        } else if (!taskId) {
+          console.error('Task ID is missing');
+          setError('Task ID is missing. Please provide a valid task ID.');
         } else {
           console.error('User ID is undefined');
           setError('Unable to fetch user information. Please try logging in again.');
@@ -60,7 +64,7 @@ function TaskDataPage() {
     };
 
     fetchData();
-  }, []);
+  }, [taskId]);
 
   if (loading) {
     return <ProgressBar />;
@@ -74,14 +78,14 @@ function TaskDataPage() {
             Task Data
           </Typography>
           <Typography variant="subtitle1" gutterBottom>
-            View all collected data for your tasks.
+            View collected data for task: {taskId}
           </Typography>
           <Button 
             component={Link} 
-            to='/home'
+            to='/tasks'
             className="custom-button primary"
           >
-            Back to home
+            Back to Tasks
           </Button>
         </Container>
       </Box>
@@ -91,37 +95,44 @@ function TaskDataPage() {
         </Typography>
         {error ? (
           <Alert severity="error">{error}</Alert>
-        ) : tasks.length > 0 ? (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Task ID</TableCell>
-                  <TableCell>URL to Scrape</TableCell>
-                  <TableCell>Found URLs</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tasks.map((task) => (
-                  <TableRow key={task._id}>
-                    <TableCell>{task._id}</TableCell>
-                    <TableCell>{task.url}</TableCell>
-                    <TableCell>
-                      {task.foundUrls && task.foundUrls.length > 0 ? (
-                        <Tooltip title={task.foundUrls.join(', ')} arrow>
-                          <span>{`${task.foundUrls.length} URLs found`}</span>
-                        </Tooltip>
-                      ) : (
-                        'No URLs found'
-                      )}
-                    </TableCell>
+        ) : taskData ? (
+          <>
+            <TableContainer component={Paper} sx={{ mb: 4 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Task ID</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>{taskData._id}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Typography variant="h5" component="h3" gutterBottom>
+              Scrapped URLs
+            </Typography>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>URL</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {taskData.scrappedData.map((url, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{url}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
         ) : (
-          <Alert severity="info">No task data found. Create a new task to get started!</Alert>
+          <Alert severity="info">No task data found for the given task ID.</Alert>
         )}
       </Container>
     </Box>

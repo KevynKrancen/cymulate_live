@@ -41,7 +41,7 @@ export class TasksController {
   }
 
   @Get('collect-data/:id')
-  async collectData(@Param('id') id: string) {
+  async collectUrlData(@Param('id') id: string) {
     this.logger.log(`Received request to collect data for task: ${id}`);
     return this.tasksService.collectData(id);
   }

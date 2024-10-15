@@ -19,6 +19,7 @@ import { TokenStorage } from './services';
 import './App.css';
 import TasksPage from './pages/Tasks/TasksPage';
 import CreateTaskPage from './pages/Contact/CreateTaskPage';
+import TaskDataPage from './pages/TaskData/TaskDataPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { authenticated } = useContext(Auth);
@@ -56,6 +57,8 @@ function AppRoutes() {
       <Route path="/tasks" element={<TasksPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/:spaceSlug" element={<SpacePage />} />
+      <Route path="/tasks/:taskId" element={ <TaskDataPage /> } />
+
     </Routes>
   );
 }
