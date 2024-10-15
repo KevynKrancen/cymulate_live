@@ -1,0 +1,91 @@
+
+version: '3.8'
+
+services:
+  db-api:
+    build:
+      context: ./db-api
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./db-api:/app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/db-api
+      - JWT_SECRET=your_secret_key
+      - JWT_EXPIRES_IN=3600
+      - SERVER_PORT=3002
+      - BASE_URL=http://localhost:3002
+      - BASE_TOKEN=thisisabasetoken
+      - DB_DATABASE_NAME=nestjs_app    
+      - DB_USERNAME=nestjs_app
+      - DB_PASSWORD={nestjs_app}
+      - FACEBOOK_APP_CLIENT_ID={FB_APP_ID}
+      - FACEBOOK_APP_CLIENT_SECRET={FB_CLIENT_SECRET_ID}
+      - REACT_APP_BASE_URL=http://127.0.0.1:3000/ 
+      - SECRET_KEY={thisisasecretkey}
+      - DB_CONNEXION_STRING=mongodb://mongo:27017/db-api
+      - SCRAPPER_URL=http://localhost:3005/
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+  scrapping-api:
+    build:
+      context: ./scrapping-api
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./scrapping-api:/app
+    environment:
+      - JWT_SECRET=your_secret_key
+      - JWT_EXPIRES_IN=3600
+      - SERVER_PORT=3002
+      - BASE_URL=http://localhost:3002
+      - BASE_TOKEN=thisisabasetoken
+      - DB_DATABASE_NAME=nestjs_app    
+      - DB_USERNAME=nestjs_app
+      - DB_PASSWORD={nestjs_app}
+      - FACEBOOK_APP_CLIENT_ID={FB_APP_ID}
+      - FACEBOOK_APP_CLIENT_SECRET={FB_CLIENT_SECRET_ID}
+      - REACT_APP_BASE_URL=http://127.0.0.1:3000/ 
+      - SECRET_KEY={thisisasecretkey}
+      - DB_CONNEXION_STRING=mongodb://mongo:27017/db-api
+      - SCRAPPER_URL=http://localhost:3005/
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+    environment:
+    -   NODE_ENV=dev
+      - REACT_APP_BASE_URL=http://127.0.0.1:3002/
+      - PROJECT_NAME=TEST
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./volumes/rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+
+  mongo:
+    image: mongo
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./volumes/data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=db-api
+
+
+
+
+

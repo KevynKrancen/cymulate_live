@@ -1,0 +1,105 @@
+.tasks-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  // make the background image fit all the page
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.7); // Darkens the image slightly for better contrast
+    z-index: -1;
+  }
+}
+
+.tasks-page-header {
+  color: white;
+  padding: 60px 0;
+  text-align: center;
+
+  h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+    font-weight: 300;
+  }
+
+  p {
+    margin-bottom: 30px;
+    font-size: 18px;
+  }
+}
+
+.tasks-page-content {
+  flex-grow: 1;
+  padding: 40px 0;
+  background-color: rgba(255, 255, 255, 0.287);
+  border-radius: 10px;
+  margin: 0 20px;
+}
+
+.custom-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+
+  &.primary {
+    background-color: #7eb6ff;
+    color: #000;
+    border: none;
+
+    &:hover {
+      background-color: #5a9dff;
+    }
+  }
+
+  &.secondary {
+    background-color: transparent;
+    color: #7eb6ff;
+    border: 1px solid #7eb6ff;
+
+    &:hover {
+      background-color: rgba(126, 182, 255, 0.1);
+    }
+  }
+}
+
+// Responsive table styles
+@media (max-width: 600px) {
+  .MuiTable-root {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+// Additional styles for better table visibility
+.MuiTableContainer-root {
+  background-color: rgba(255, 255, 255, 0.9);
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.MuiTableCell-head {
+  background-color: #7eb6ff;
+  color: white;
+  font-weight: bold;
+}
+
+.MuiTableRow-root:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}

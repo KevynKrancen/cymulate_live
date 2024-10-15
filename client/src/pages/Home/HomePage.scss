@@ -1,0 +1,58 @@
+.homepage-main-wrapper {
+  overflow: hidden;
+  height: 100vh; // Changed from max-height to height for full viewport coverage
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-component-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .hero-component-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // This ensures the image covers the entire container
+  }
+
+  .hero-component-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    width: 100%;
+    max-width: 600px; // Increased max-width for better responsiveness
+    padding: 0 20px; // Added padding for smaller screens
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      margin-bottom: 30px;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap; // Allow buttons to wrap on smaller screens
+    }
+  }
+}
+
+// Media query for responsiveness
+@media (max-width: 10) {
+  .hero-component-wrapper {
+    .hero-component-content {
+      h1 {
+        font-size: 32px;
+      }
+    }
+  }
+}
